@@ -237,7 +237,6 @@ public class MarsBase {
                     prefix[k + 1] = sumArray[j + 1][k + 1] - sumArray[j + 1][0] - sumArray[i][k + 1] + sumArray[i][0];
                 }
 //                System.out.println(Arrays.toString(prefix));
-                int sum = 0;
                 int prevMinSum = 0;
                 int prevIndex = 0;
                 for (int k = 0; k < n; k++) {
