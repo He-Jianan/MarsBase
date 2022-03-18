@@ -58,31 +58,39 @@ public class MarsBase {
         if (A.length == 0) {
             return resultList;
         }
-        int l = 0;
-        int r = 0;
-        int maxSum = Integer.MIN_VALUE;
-        resultList = findSubMaxSum(A, 0, 0, maxSum, 0, 0);
 
-//        resultList[0] = l;
-//        resultList[1] = r;
-//        resultList[2] = maxSum;
+        int[] res = helper(A, n - 1);
+
+
+        resultList[0] = res[2] + 1;
+        resultList[1] = res[4];
+        resultList[2] = res[0];
         return resultList;
 
     }
 
-    private static int[] findSubMaxSum(int[] A, int index, int sum, int maxSum, int l, int r) {
-        if (index == A.length) {
-            return new int[]{l, r, maxSum};
+    private static int[] helper(int[] A, int index) {
+        if (index == 0) {
+            return new int[]{A[0], A[0], 0, 0, 1};
         }
-        while(index < A.length && A[index] + sum >= A[index]) {
-            sum += A[index];
-            if (sum > maxSum) {
-                maxSum = sum;
-                r = index;
-            }
-            index++;
+        int[] memo = helper(A, index - 1);
+        int prevMaxSum = memo[0];
+        int prefixSum = memo[1];
+        int prevLeft = memo[2];
+        int prevMinSum = memo[3];
+        int right = memo[4];
+
+        prefixSum += A[index];
+        int sum = prefixSum - prevMinSum;
+        if (sum > prevMaxSum) {
+            prevMaxSum = sum;
+            right = index;
         }
-        return findSubMaxSum(A, index, 0, maxSum, l + 1, r);
+        if (prefixSum < prevMinSum) {
+            prevMinSum = prefixSum;
+            prevLeft = index;
+        }
+        return new int[] {prevMaxSum, prefixSum, prevLeft, prevMinSum, right};
     }
 
     private static int[] task3b(int[] A, int n) {
@@ -268,6 +276,7 @@ public class MarsBase {
         for (int result : resultList) {
             System.out.print(result + " ");
         }
+        System.out.print("\n");
     }
 
 
@@ -366,7 +375,6 @@ public class MarsBase {
                 break;
             }
         }
-
 
 //        int[] A = new int[]{-2,1,-3,4,-1,2,1,-5,4};
 //        int n = 9;
