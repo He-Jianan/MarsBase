@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class MarsBase {
@@ -9,16 +10,16 @@ public class MarsBase {
         int maxSum = Integer.MIN_VALUE;
         int l = 0;
         int r = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                int sum = 0;
-                for (int k = i; k <= j; k++) {
-                    sum += A[k];
+        for (int start = 0; start < n; start++) {
+            for (int end = start; end < n; end++) {
+                int currSum = 0;
+                for (int k = start; k <= end; k++) {
+                    currSum += A[k];
                 }
-                if (sum > maxSum) {
-                    l = i;
-                    r = j;
-                    maxSum = sum;
+                if (currSum > maxSum) {
+                    l = start;
+                    r = end;
+                    maxSum = currSum;
                 }
             }
         }
@@ -36,14 +37,14 @@ public class MarsBase {
         int maxSum = Integer.MIN_VALUE;
         int l = 0;
         int r = 0;
-        for (int i = 0; i < n; i++) {
-            int sum = 0;
-            for (int j = i; j < n; j++) {
-                sum += A[j];
-                if (sum > maxSum) {
-                    maxSum = sum;
-                    l = i;
-                    r = j;
+        for (int start = 0; start < n; start++) {
+            int currSum = 0;
+            for (int end = start; end < n; end++) {
+                currSum += A[end];
+                if (currSum > maxSum) {
+                    maxSum = currSum;
+                    l = start;
+                    r = end;
                 }
             }
         }
@@ -74,23 +75,23 @@ public class MarsBase {
             return new int[]{A[0], A[0], 0, 0, 1};
         }
         int[] memo = helper(A, index - 1);
-        int prevMaxSum = memo[0];
+        int prevMax = memo[0];
         int prefixSum = memo[1];
         int prevLeft = memo[2];
         int prevMinSum = memo[3];
         int right = memo[4];
 
         prefixSum += A[index];
-        int sum = prefixSum - prevMinSum;
-        if (sum > prevMaxSum) {
-            prevMaxSum = sum;
+        int currMax = prefixSum - prevMinSum;
+        if (currMax > prevMax) {
+            prevMax = currMax;
             right = index;
         }
         if (prefixSum < prevMinSum) {
             prevMinSum = prefixSum;
             prevLeft = index;
         }
-        return new int[] {prevMaxSum, prefixSum, prevLeft, prevMinSum, right};
+        return new int[] {prevMax, prefixSum, prevLeft, prevMinSum, right};
     }
 
     private static int[] task3b(int[] A, int n) {
@@ -101,20 +102,20 @@ public class MarsBase {
         int maxSum = Integer.MIN_VALUE;
         int l = 0;
         int r = 0;
-        int sum = 0;
+        int currSum = 0;
         int prevIndex = 0;
         int prevMinSum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += A[i];
-            int currMaxSum = sum - prevMinSum;
+        for (int end = 0; end < n; end++) {
+            currSum += A[end];
+            int currMaxSum = currSum - prevMinSum;
             if (currMaxSum > maxSum) {
                 maxSum = currMaxSum;
                 l = prevIndex + 1;
-                r = i;
+                r = end;
             }
-            if (sum < prevMinSum) {
-                prevMinSum = sum;
-                prevIndex = i;
+            if (currSum < prevMinSum) {
+                prevMinSum = currSum;
+                prevIndex = end;
             }
         }
         resultList[0] = l;
@@ -133,22 +134,22 @@ public class MarsBase {
         int y1 = 0;
         int x2 = 0;
         int y2 = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = i; k < m; k++) {
-                    for (int l = 0; l < n; l++) {
-                        int sum = 0;
-                        for (int o = i; o <= k; o++) {
-                            for (int p = 0; p <= l; p++) {
-                                sum += A[o][p];
+        for (int row1 = 0; row1 < m; row1++) {
+            for (int col1 = 0; col1 < n; col1++) {
+                for (int row2 = row1; row2 < m; row2++) {
+                    for (int col2 = 0; col2 < n; col2++) {
+                        int currSum = 0;
+                        for (int i = row1; i <= row2; i++) {
+                            for (int j = 0; j <= col2; j++) {
+                                currSum += A[i][j];
                             }
                         }
-                        if (sum > maxSum) {
-                            maxSum = sum;
-                            x1 = i;
-                            y1 = j;
-                            x2 = k;
-                            y2 = l;
+                        if (currSum > maxSum) {
+                            maxSum = currSum;
+                            x1 = row1;
+                            y1 = col1;
+                            x2 = row2;
+                            y2 = col2;
                         }
                     }
                 }
@@ -186,24 +187,24 @@ public class MarsBase {
                 }
             }
         }*/
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                sumArray[i][j] = sumArray[i - 1][j] + sumArray[i][j - 1] - sumArray[i - 1][j - 1] + A[i - 1][j - 1];
+        for (int row = 1; row <= m; row++) {
+            for (int col = 1; col <= n; col++) {
+                sumArray[row][col] = sumArray[row - 1][col] + sumArray[row][col - 1] - sumArray[row - 1][col - 1] + A[row - 1][col - 1];
             }
         }
 
         //Find the maximum subarray
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = i; k < m; k++) {
-                    for (int l = j; l < n; l++) {
-                        int sum = sumArray[k + 1][l + 1] - sumArray[k + 1][j] - sumArray[i][l + 1] + sumArray[i][j];
-                        if (sum > maxSum) {
-                            maxSum = sum;
-                            x1 = i;
-                            y1 = j;
-                            x2 = k;
-                            y2 = l;
+        for (int row1 = 0; row1 < m; row1++) {
+            for (int col1 = 0; col1 < n; col1++) {
+                for (int row2 = row1; row2 < m; row2++) {
+                    for (int col2 = col1; col2 < n; col2++) {
+                        int currSum = sumArray[row2 + 1][col2 + 1] - sumArray[row2 + 1][col1] - sumArray[row1][col2 + 1] + sumArray[row1][col1];
+                        if (currSum > maxSum) {
+                            maxSum = currSum;
+                            x1 = row1;
+                            y1 = col1;
+                            x2 = row2;
+                            y2 = col2;
                         }
                     }
                 }
@@ -231,18 +232,18 @@ public class MarsBase {
 
         //Construct an array to save the sum from A[0][0] to A[i][j]
         int[][] sumArray = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                sumArray[i][j] = sumArray[i - 1][j] + sumArray[i][j - 1] - sumArray[i - 1][j - 1] + A[i - 1][j - 1];
+        for (int row = 1; row <= m; row++) {
+            for (int col = 1; col <= n; col++) {
+                sumArray[row][col] = sumArray[row - 1][col] + sumArray[row][col - 1] - sumArray[row - 1][col - 1] + A[row - 1][col - 1];
             }
         }
 
         //Find the maximum subarray
-        for (int i = 0; i < m; i++) {
-            for (int j = i; j < m; j++) {
+        for (int row1 = 0; row1 < m; row1++) {
+            for (int row2 = row1; row2 < m; row2++) {
                 int[] prefix = new int[n + 1];
-                for (int k = 0; k < n; k++) {
-                    prefix[k + 1] = sumArray[j + 1][k + 1] - sumArray[j + 1][0] - sumArray[i][k + 1] + sumArray[i][0];
+                for (int col = 0; col < n; col++) {
+                    prefix[col + 1] = sumArray[row2 + 1][col + 1] - sumArray[row2 + 1][0] - sumArray[row1][col + 1] + sumArray[row1][0];
                 }
 //                System.out.println(Arrays.toString(prefix));
                 int prevMinSum = 0;
@@ -251,8 +252,8 @@ public class MarsBase {
                     int currMaxSum = prefix[k + 1] - prevMinSum;
                     if (currMaxSum > maxSum) {
                         maxSum = currMaxSum;
-                        x1 = i;
-                        x2 = j;
+                        x1 = row1;
+                        x2 = row2;
                         y1 = prevIndex;
                         y2 = k;
                     }
@@ -281,6 +282,7 @@ public class MarsBase {
 
 
     public static void main(String[] args) {
+//        Random random = new Random();
         switch (args[0]) {
             case "1": {
                 Scanner sc = new Scanner(System.in);
@@ -288,8 +290,12 @@ public class MarsBase {
                 int[] A = new int[n];
                 for (int i = 0; i < n; i++) {
                     A[i] = sc.nextInt();
+//                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
                 }
+//                long startTime = System.currentTimeMillis();
                 int[] resultList = task1(A, n);
+//                long endTime = System.currentTimeMillis();
+//                System.out.println("Task 1 running time: " + (endTime - startTime) + " ms");
                 print(resultList);
                 break;
             }
@@ -299,8 +305,12 @@ public class MarsBase {
                 int[] A = new int[n];
                 for (int i = 0; i < n; i++) {
                     A[i] = sc.nextInt();
+//                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
                 }
+//                long startTime = System.currentTimeMillis();
                 int[] resultList = task2(A, n);
+//                long endTime = System.currentTimeMillis();
+//                System.out.println("Task 2 running time: " + (endTime - startTime) + " ms");
                 print(resultList);
                 break;
             }
@@ -310,8 +320,12 @@ public class MarsBase {
                 int[] A = new int[n];
                 for (int i = 0; i < n; i++) {
                     A[i] = sc.nextInt();
+//                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
                 }
+//                long startTime = System.nanoTime();
                 int[] resultList = task3a(A, n);
+//                long endTime = System.nanoTime();
+//                System.out.println("Task 3a running time: " + (endTime - startTime) + " ns");
                 print(resultList);
                 break;
             }
@@ -321,8 +335,12 @@ public class MarsBase {
                 int[] A = new int[n];
                 for (int i = 0; i < n; i++) {
                     A[i] = sc.nextInt();
+//                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
                 }
+//                long startTime = System.nanoTime();
                 int[] resultList = task3b(A, n);
+//                long endTime = System.nanoTime();
+//                System.out.println("Task 3b running time: " + (endTime - startTime) + " ns");
                 print(resultList);
                 break;
             }
@@ -335,10 +353,13 @@ public class MarsBase {
                 for (int i = 0; i < m; i++) {
                     for (int j = 0; j < n; j++) {
                         A[i][j] = sc.nextInt();
+//                        A[i][j] = (int) (random.nextInt() / (Math.pow(2, 16)));
                     }
-                    sc.nextLine();
                 }
+//                long startTime = System.currentTimeMillis();
                 int[] resultList = task4(A, m, n);
+//                long endTime = System.currentTimeMillis();
+//                System.out.println("Task 4 running time: " + (endTime - startTime) + " ms");
                 print(resultList);
                 break;
             }
@@ -351,10 +372,13 @@ public class MarsBase {
                 for (int i = 0; i < m; i++) {
                     for (int j = 0; j < n; j++) {
                         A[i][j] = sc.nextInt();
+//                        A[i][j] = (int) (random.nextInt() / (Math.pow(2, 16)));
                     }
-                    sc.nextLine();
                 }
+//                long startTime = System.currentTimeMillis();
                 int[] resultList = task5(A, m, n);
+//                long endTime = System.currentTimeMillis();
+//                System.out.println("Task 5 running time: " + (endTime - startTime) + " ms");
                 print(resultList);
                 break;
             }
@@ -367,14 +391,19 @@ public class MarsBase {
                 for (int i = 0; i < m; i++) {
                     for (int j = 0; j < n; j++) {
                         A[i][j] = sc.nextInt();
+//                        A[i][j] = (int) (random.nextInt() / (Math.pow(2, 16)));
                     }
-                    sc.nextLine();
                 }
+//                long startTime = System.currentTimeMillis();
                 int[] resultList = task6(A, m, n);
+//                long endTime = System.currentTimeMillis();
+//                System.out.println("Task 6 running time: " + (endTime - startTime) + " ms");
                 print(resultList);
                 break;
             }
         }
+
+
 
 //        int[] A = new int[]{-2,1,-3,4,-1,2,1,-5,4};
 //        int n = 9;
