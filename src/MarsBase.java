@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -60,38 +61,26 @@ public class MarsBase {
             return resultList;
         }
 
-        int[] res = helper(A, n - 1);
+        resultList = helper(A, 0, Integer.MIN_VALUE, 0, 0, 0, 0);
 
-
-        resultList[0] = res[2] + 1;
-        resultList[1] = res[4];
-        resultList[2] = res[0];
         return resultList;
-
     }
 
-    private static int[] helper(int[] A, int index) {
-        if (index == 0) {
-            return new int[]{A[0], A[0], 0, 0, 1};
+    private static int[] helper(int[] A, int index, int maxSum, int currSum, int l, int r, int start) {
+        if (index == A.length) {
+            return new int[] {l, r, maxSum};
         }
-        int[] memo = helper(A, index - 1);
-        int prevMax = memo[0];
-        int prefixSum = memo[1];
-        int prevLeft = memo[2];
-        int prevMinSum = memo[3];
-        int right = memo[4];
-
-        prefixSum += A[index];
-        int currMax = prefixSum - prevMinSum;
-        if (currMax > prevMax) {
-            prevMax = currMax;
-            right = index;
+        currSum += A[index];
+        if (currSum > maxSum) {
+            maxSum = currSum;
+            l = start;
+            r = index;
         }
-        if (prefixSum < prevMinSum) {
-            prevMinSum = prefixSum;
-            prevLeft = index;
+        if (currSum < 0) {
+            currSum = 0;
+            start = index + 1;
         }
-        return new int[] {prevMax, prefixSum, prevLeft, prevMinSum, right};
+        return helper(A, index + 1, maxSum, currSum, l, r, start);
     }
 
     private static int[] task3b(int[] A, int n) {
@@ -282,7 +271,7 @@ public class MarsBase {
 
 
     public static void main(String[] args) {
-//        Random random = new Random();
+        Random random = new Random();
         switch (args[0]) {
             case "1": {
                 Scanner sc = new Scanner(System.in);
@@ -322,6 +311,9 @@ public class MarsBase {
                     A[i] = sc.nextInt();
 //                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
                 }
+//                int[] A = new int[] {10106, 20526, -12726, 2067, -32419, -19991, -24083, 18070, -24869, -1403, -10575, 28013, -32239, 2129, -25533, -3242, 16030, -18371, 22479, -10687};
+
+//                System.out.println(Arrays.toString(A));
 //                long startTime = System.nanoTime();
                 int[] resultList = task3a(A, n);
 //                long endTime = System.nanoTime();
