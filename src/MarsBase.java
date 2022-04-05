@@ -1,9 +1,8 @@
-import java.util.Arrays;
-import java.util.Random;
 import java.util.Scanner;
 
 public class MarsBase {
     private static long[] task1(int[] A, int n) {
+        //Initialize the parameters
         long[] resultList = new long[3];
         if (A.length == 0) {
             return resultList;
@@ -11,12 +10,16 @@ public class MarsBase {
         long maxSum = Long.MIN_VALUE;
         int l = 0;
         int r = 0;
+
+        //Iterate over all possible starting and ending index
         for (int start = 0; start < n; start++) {
             for (int end = start; end < n; end++) {
+                //Calculate the sum of this subarray.
                 long currSum = 0;
                 for (int k = start; k <= end; k++) {
                     currSum += A[k];
                 }
+                //If the current sum is larger than maximum Sum, update the result parameters
                 if (currSum > maxSum) {
                     l = start;
                     r = end;
@@ -24,6 +27,8 @@ public class MarsBase {
                 }
             }
         }
+
+        //Get the task result
         resultList[0] = l + 1;
         resultList[1] = r + 1;
         resultList[2] = maxSum;
@@ -31,6 +36,7 @@ public class MarsBase {
     }
 
     private static long[] task2(int[] A, int n) {
+        // Initialize the parameters
         long[] resultList = new long[3];
         if (A.length == 0) {
             return resultList;
@@ -38,10 +44,15 @@ public class MarsBase {
         long maxSum = Long.MIN_VALUE;
         int l = 0;
         int r = 0;
-        for (int start = 0; start < n; start++) {
+
+
+        for (int start = 0; start < n; start++) {    // Fix the starting index.
             long currSum = 0;
+
+            // Iterate over all possible ending index.
             for (int end = start; end < n; end++) {
                 currSum += A[end];
+                // If the current sum is larger than maximum sum, update the result parameters
                 if (currSum > maxSum) {
                     maxSum = currSum;
                     l = start;
@@ -49,6 +60,8 @@ public class MarsBase {
                 }
             }
         }
+
+        // Get the task result
         resultList[0] = l + 1;
         resultList[1] = r + 1;
         resultList[2] = maxSum;
@@ -56,34 +69,46 @@ public class MarsBase {
     }
 
     private static long[] task3a(int[] A, int n) {
+        // Initialize the parameters
         long[] resultList = new long[3];
         if (A.length == 0) {
             return resultList;
         }
 
+        // Find the result recursively
         resultList = helper(A, 0, Long.MIN_VALUE, 0, 0, 0, 0);
 
         return resultList;
     }
 
     private static long[] helper(int[] A, int index, long maxSum, long currSum, int l, int r, int start) {
+        // If the current index is out of the bound of the array, stop the recursion
         if (index == A.length) {
             return new long[] {l, r, maxSum};
         }
+
+        // Calculate the current sum of the subarray
         currSum += A[index];
+
+        // If the current sum is larger than maximum sum, update the result parameters
         if (currSum > maxSum) {
             maxSum = currSum;
             l = start;
             r = index;
         }
+
+        // If the current sum is less than 0, update the starting index of the subarray and reset the sum to zero.
         if (currSum < 0) {
             currSum = 0;
             start = index + 1;
         }
+
+        // Move the current index to next element and continue the recursion
         return helper(A, index + 1, maxSum, currSum, l + 1, r + 1, start);
     }
 
     private static long[] task3b(int[] A, int n) {
+        // Initialize the parameters
         long[] resultList = new long[3];
         if (A.length == 0) {
             return resultList;
@@ -94,19 +119,29 @@ public class MarsBase {
         long currSum = 0;
         int prevIndex = 0;
         long prevMinSum = 0;
+
+        // Iterate over all possible ending index.
         for (int end = 0; end < n; end++) {
+            // Update the current sum of the subarray
             currSum += A[end];
+
+            // Calculate the current maximum sum of the subarray
             long currMaxSum = currSum - prevMinSum;
+            //  If the current maximum sum is larger than the previous maximum sum, update the result parameters
             if (currMaxSum > maxSum) {
                 maxSum = currMaxSum;
                 l = prevIndex + 1;
                 r = end;
             }
+
+            // If the current sum is less than previous minimum sum, update the parameters
             if (currSum < prevMinSum) {
                 prevMinSum = currSum;
                 prevIndex = end;
             }
         }
+
+        // Get the task result
         resultList[0] = l + 1;
         resultList[1] = r + 1;
         resultList[2] = maxSum;
@@ -114,6 +149,7 @@ public class MarsBase {
     }
 
     private static long[] task4(int[][] A, int m, int n) {
+        // Initialize the parameters
         long[] resultList = new long[5];
         if (A.length == 0) {
             return resultList;
@@ -123,16 +159,22 @@ public class MarsBase {
         int y1 = 0;
         int x2 = 0;
         int y2 = 0;
+
+        // Iterate over all possible starting and ending index
         for (int row1 = 0; row1 < m; row1++) {
             for (int col1 = 0; col1 < n; col1++) {
                 for (int row2 = row1; row2 < m; row2++) {
                     for (int col2 = 0; col2 < n; col2++) {
+
+                        //Calculate the sum of the current subarray
                         long currSum = 0;
                         for (int i = row1; i <= row2; i++) {
                             for (int j = 0; j <= col2; j++) {
                                 currSum += A[i][j];
                             }
                         }
+
+                        // If the current sum is larger than maximum sum, update the result parameters
                         if (currSum > maxSum) {
                             maxSum = currSum;
                             x1 = row1;
@@ -144,6 +186,8 @@ public class MarsBase {
                 }
             }
         }
+
+        // Get the result
         resultList[0] = x1 + 1;
         resultList[1] = y1 + 1;
         resultList[2] = x2 + 1;
@@ -153,6 +197,7 @@ public class MarsBase {
     }
 
     private static long[] task5(int[][] A, int m, int n) {
+
         long[] resultList = new long[5];
         if (A.length == 0) {
             return resultList;
@@ -163,31 +208,24 @@ public class MarsBase {
         int x2 = 0;
         int y2 = 0;
 
-        //Construct an array to save the sum from A[0][0] to A[i][j]
+        //Construct an array to save the sum from A[0][0] to A[row-1][col-1]
         long[][] sumArray = new long[m + 1][n + 1];
-        /*for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                int totalSum = 0;
-                for (int k = 0; k <= i; k++) {
-                    for (int l = 0; l <= j; l++) {
-                        totalSum += A[k][l];
-                        sumArray[i + 1][j + 1] = totalSum;
-                    }
-                }
-            }
-        }*/
         for (int row = 1; row <= m; row++) {
             for (int col = 1; col <= n; col++) {
                 sumArray[row][col] = sumArray[row - 1][col] + sumArray[row][col - 1] - sumArray[row - 1][col - 1] + A[row - 1][col - 1];
             }
         }
 
-        //Find the maximum subarray
+        //Iterate over all possible starting and ending index
         for (int row1 = 0; row1 < m; row1++) {
             for (int col1 = 0; col1 < n; col1++) {
                 for (int row2 = row1; row2 < m; row2++) {
                     for (int col2 = col1; col2 < n; col2++) {
+
+                        // Calculate the currnet sum of the subarray
                         long currSum = sumArray[row2 + 1][col2 + 1] - sumArray[row2 + 1][col1] - sumArray[row1][col2 + 1] + sumArray[row1][col1];
+
+                        // If the current sum is larger than maximum sum, update the result parameters
                         if (currSum > maxSum) {
                             maxSum = currSum;
                             x1 = row1;
@@ -200,6 +238,7 @@ public class MarsBase {
             }
         }
 
+        // Get the task result
         resultList[0] = x1 + 1;
         resultList[1] = y1 + 1;
         resultList[2] = x2 + 1;
@@ -209,6 +248,7 @@ public class MarsBase {
     }
 
     private static long[] task6(int[][] A, int m, int n) {
+        // Initialize the parameters
         long[] resultList = new long[5];
         if (A.length == 0) {
             return resultList;
@@ -219,7 +259,7 @@ public class MarsBase {
         int x2 = 0;
         int y2 = 0;
 
-        //Construct an array to save the sum from A[0][0] to A[i][j]
+        //Construct an array to save the sum from A[0][0] to A[row-1][col-1]
         long[][] sumArray = new long[m + 1][n + 1];
         for (int row = 1; row <= m; row++) {
             for (int col = 1; col <= n; col++) {
@@ -227,10 +267,12 @@ public class MarsBase {
             }
         }
 
-        //Find the maximum subarray
+        //Iterate over all possible starting and ending index
         for (int row1 = 0; row1 < m; row1++) {
             for (int row2 = row1; row2 < m; row2++) {
                 long[] prefix = new long[n + 1];
+
+                // Fix the starting and ending row index and iterate all the column index
                 for (int col = 0; col < n; col++) {
                     prefix[col + 1] = sumArray[row2 + 1][col + 1] - sumArray[row2 + 1][0] - sumArray[row1][col + 1] + sumArray[row1][0];
                 }
@@ -238,7 +280,11 @@ public class MarsBase {
                 long prevMinSum = 0;
                 int prevIndex = 0;
                 for (int k = 0; k < n; k++) {
+
+                    // Calculate the current maximum sum
                     long currMaxSum = prefix[k + 1] - prevMinSum;
+
+                    // If the current sum is larger than maximum sum, update the result parameters
                     if (currMaxSum > maxSum) {
                         maxSum = currMaxSum;
                         x1 = row1;
@@ -246,6 +292,8 @@ public class MarsBase {
                         y1 = prevIndex;
                         y2 = k;
                     }
+
+                    // If the current prefix is less than previous minimum sum, update the parameters
                     if (prefix[k + 1] < prevMinSum) {
                         prevMinSum = prefix[k + 1];
                         prevIndex = k;
@@ -254,6 +302,7 @@ public class MarsBase {
             }
         }
 
+        // Get the task result
         resultList[0] = x1 + 1;
         resultList[1] = y1 + 1;
         resultList[2] = x2 + 1;
@@ -262,6 +311,7 @@ public class MarsBase {
         return resultList;
     }
 
+    // Method to print the result on the console
     private static void print(long[] resultList) {
         for (long result : resultList) {
             System.out.print(result + " ");
@@ -271,8 +321,12 @@ public class MarsBase {
 
 
     public static void main(String[] args) {
-        Random random = new Random();
+//        Random random = new Random();
+
+        // Determine which task will be executed according to the input
         switch (args[0]) {
+
+            // Execute the task 1
             case "1": {
                 Scanner sc = new Scanner(System.in);
                 int n = sc.nextInt();
@@ -288,6 +342,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 2
             case "2": {
                 Scanner sc = new Scanner(System.in);
                 int n = sc.nextInt();
@@ -303,6 +359,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 3a
             case "3a": {
                 Scanner sc = new Scanner(System.in);
                 int n = sc.nextInt();
@@ -321,6 +379,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 3b
             case "3b": {
                 Scanner sc = new Scanner(System.in);
                 int n = sc.nextInt();
@@ -336,6 +396,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 4
             case "4": {
                 Scanner sc = new Scanner(System.in);
                 int m = sc.nextInt();
@@ -355,6 +417,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 5
             case "5": {
                 Scanner sc = new Scanner(System.in);
                 int m = sc.nextInt();
@@ -374,6 +438,8 @@ public class MarsBase {
                 print(resultList);
                 break;
             }
+
+            // Execute the task 6
             case "6": {
                 Scanner sc = new Scanner(System.in);
                 int m = sc.nextInt();
@@ -394,23 +460,6 @@ public class MarsBase {
                 break;
             }
         }
-
-
-
-//        int[] A = new int[]{-2,1,-3,4,-1,2,1,-5,4};
-//        int n = 9;
-
-//        int[] resultList = task1(A, n);
-//        int[] resultList = task2(A, n);
-//        int[] resultList = task3a(A, n);
-//        int[] resultList = task3b(A, n);
-
-//        int[][] A = new int[][]{{-1, -2, 4}, {6, 1, -3}, {-7, 1, -6}};
-//        int m = 3, n = 3;
-//        int[] resultList = task4(A, m, n);
-//        int[] resultList = task5(A, m, n);
-//        int[] resultList = task6(A, m, n);
-//        print(resultList);
 
     }
 }
