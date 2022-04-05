@@ -208,41 +208,48 @@ public class MarsBase {
         int x2 = 0;
         int y2 = 0;
 
-        //Construct an array to save the sum from A[0][0] to A[row-1][col-1]
-        long[][] sumArray = new long[m + 1][n + 1];
-        for (int row = 1; row <= m; row++) {
-            for (int col = 1; col <= n; col++) {
-                sumArray[row][col] = sumArray[row - 1][col] + sumArray[row][col - 1] - sumArray[row - 1][col - 1] + A[row - 1][col - 1];
-            }
-        }
-
-        //Iterate over all possible starting and ending index
+        /*
+        Iterate over all combinations of row numbers (row_1, row_2)
+        and focus on all the submatrix that having row_1 as the top
+        row and row_2 as the bottom row.
+         */
         for (int row1 = 0; row1 < m; row1++) {
-            for (int col1 = 0; col1 < n; col1++) {
-                for (int row2 = row1; row2 < m; row2++) {
-                    for (int col2 = col1; col2 < n; col2++) {
-
-                        // Calculate the currnet sum of the subarray
-                        long currSum = sumArray[row2 + 1][col2 + 1] - sumArray[row2 + 1][col1] - sumArray[row1][col2 + 1] + sumArray[row1][col1];
-
-                        // If the current sum is larger than maximum sum, update the result parameters
-                        if (currSum > maxSum) {
-                            maxSum = currSum;
-                            x1 = row1;
-                            y1 = col1;
-                            x2 = row2;
-                            y2 = col2;
-                        }
+            for (int row2 = row1; row2 < m; row2++) {
+                // Build an array representing the prefix sum of the corresponding matrix.
+                long[] ss = new long[n];
+                long[] prefix = new long[n + 1];
+                for (int col = 0; col < n; col++) {
+                    for (int row = row1; row <= row2; row++) {
+                        ss[col] += A[row][col];
+                    }
+                }
+                for (int col = 0; col < n; col++) {
+                    prefix[col + 1] = prefix[col] + ss[col];
+                }
+                // Then we use the algorithm from task3 to find the maximum sum from prefix array.
+                int pre_idx = 0;
+                for (int i = 1; i <= n; i++) {
+                    if (prefix[i] - prefix[pre_idx] > maxSum) {
+                        y1 = pre_idx + 1;
+                        y2 = i;
+                        x1 = row1;
+                        x2 = row2;
+                        maxSum = prefix[i] - prefix[pre_idx];
+                    }
+                    if (prefix[i] < prefix[pre_idx]) {
+                        pre_idx = i;
                     }
                 }
             }
         }
 
+
+
         // Get the task result
         resultList[0] = x1 + 1;
-        resultList[1] = y1 + 1;
+        resultList[1] = y1;
         resultList[2] = x2 + 1;
-        resultList[3] = y2 + 1;
+        resultList[3] = y2;
         resultList[4] = maxSum;
         return resultList;
     }
@@ -259,7 +266,11 @@ public class MarsBase {
         int x2 = 0;
         int y2 = 0;
 
-        //Construct an array to save the sum from A[0][0] to A[row-1][col-1]
+        /*
+         Build prefix sum matrix for A. P[x][y] stands for the
+         sum of the matrix that having (0, 0) as its top-left cell
+         and (x, y) as the bottom-right cell
+         */
         long[][] sumArray = new long[m + 1][n + 1];
         for (int row = 1; row <= m; row++) {
             for (int col = 1; col <= n; col++) {
@@ -351,6 +362,7 @@ public class MarsBase {
                 for (int i = 0; i < n; i++) {
                     A[i] = sc.nextInt();
 //                    A[i] = (int) (random.nextInt() / (Math.pow(2, 16)));
+//                    A[i] = Integer.MAX_VALUE;
                 }
 //                long startTime = System.currentTimeMillis();
                 long[] resultList = task2(A, n);
